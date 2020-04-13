@@ -11,6 +11,23 @@ passport.use(new GoogleStrategy({
 }, ((accessToken,refreshToken,profile,done) =>{
     const data = profile._json;
     console.log(data);
+    User.findOrCreate({
+        'googleId': data.id
+    }, {
+        name: data.given_name,
+        surname: data.family_name,
+        profilePhotoUrl: data.picture
+    }, (err, user)=>{
+        return done(err, user);
+    });
 })));
+
+passport.serializeUser((user,done) => {
+    done(null, user);
+});
+
+passport.deserializeUser((user,done) => {
+    done(null, user);
+});
 
 module.exports = passport;
